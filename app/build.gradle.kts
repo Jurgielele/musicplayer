@@ -42,6 +42,7 @@ android {
 dependencies {
     implementation(project(":common"))
     implementation(project(":user"))
+    implementation(libs.bundles.koin)
     implementation(libs.bundles.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

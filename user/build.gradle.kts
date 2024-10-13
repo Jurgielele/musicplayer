@@ -35,9 +35,11 @@ android {
 
 dependencies {
     implementation(project(":common"))
+    implementation(libs.bundles.koin)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.bundles.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.android)
     implementation(platform(libs.androidx.compose.bom))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
