@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "musicpalyer"
 include(":app")
- 
+include(":common")
+include(":user")
