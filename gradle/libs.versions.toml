@@ -11,7 +11,7 @@ composeBom = "2024.09.03"
 appcompat = "1.7.0"
 lifecycle-viewmodel-android = "2.8.6"
 coin = "4.0.0"
-
+coroutines = "1.6.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -34,6 +34,8 @@ koin-androidx-navigation = { group = "io.insert-koin", name = "koin-androidx-nav
 koin-androidx-startup = { group = "io.insert-koin", name = "koin-androidx-startup", version.ref = "coin" }
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "coin" }
 koin-androidx-compose-navigation = { group = "io.insert-koin", name = "koin-androidx-compose-navigation", version.ref = "coin" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 [bundles]
 compose = [
     "androidx-ui",

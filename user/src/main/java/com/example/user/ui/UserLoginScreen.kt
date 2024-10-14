@@ -7,6 +7,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.example.user.presentation.UserLoginViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -15,14 +16,23 @@ import org.koin.androidx.compose.koinViewModel
 fun UserLoginScreen(
 ) {
     val viewModel = koinViewModel<UserLoginViewModel>()
-    UserLoginScreenContent(){
-        viewModel.login()
+    LaunchedEffect(Unit) {
+        viewModel.actions.collect { action -> action.handle() }
+    }
+    UserLoginScreenContent(
+        trigger = { command -> viewModel.trigger(command) }
+    )
+}
+
+private fun UserLoginViewModel.Action.handle() = when(this){
+    is UserLoginViewModel.Action.PrintLog -> {
+        println("qaz printing log from action")
     }
 }
 
 @Composable
 private fun UserLoginScreenContent(
-    onClick: () -> Unit
+    trigger: (UserLoginViewModel.Command) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -32,7 +42,7 @@ private fun UserLoginScreenContent(
         Text(text = "User module!")
 
         Button(
-            onClick = { onClick() }
+            onClick = { trigger(UserLoginViewModel.Command.LoadData) }
         ) {
             Text(text = "test")
         }
