@@ -23,3 +23,4 @@ rootProject.name = "musicpalyer"
 include(":app")
 include(":common")
 include(":user")
+include(":designsystem")

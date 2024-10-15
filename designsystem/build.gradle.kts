@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.user"
+    namespace = "com.example.designsystem"
     compileSdk = 34
 
     defaultConfig {
@@ -34,15 +34,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":common"))
-    implementation(project(":designsystem"))
-    implementation(libs.bundles.koin)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.bundles.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.android)
-    implementation(platform(libs.androidx.compose.bom))
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.material)
 }
