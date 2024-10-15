@@ -3,11 +3,15 @@ package com.example.user.presentation
 import com.example.core.android.viewmodel.BaseCommand
 import com.example.core.viewmodel.BaseViewModel
 import com.example.core.android.viewmodel.CommandType
+import com.example.user.domain.UserGetLoginDataUseCase
+import com.example.user.domain.UserGetLoginDataUseCase.LoginScreenData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class UserLoginViewModel : BaseViewModel<UserLoginViewModel.Command, UserLoginViewModel.Action>() {
+class UserLoginViewModel(
+    private val getLoginDataUseCase: UserGetLoginDataUseCase
+) : BaseViewModel<UserLoginViewModel.Command, UserLoginViewModel.Action>() {
 
     private val state = MutableStateFlow(State())
     val viewState: StateFlow<ViewState> = state.mapState { state ->
@@ -15,7 +19,8 @@ class UserLoginViewModel : BaseViewModel<UserLoginViewModel.Command, UserLoginVi
     }
 
     init {
-        state.update { state -> state.copy(data = LoginMockData()) }
+        val data = getLoginDataUseCase.execute()
+        state.update { state -> state.copy(data = data) }
     }
 
     override fun Command.handle() {
@@ -50,7 +55,7 @@ class UserLoginViewModel : BaseViewModel<UserLoginViewModel.Command, UserLoginVi
     }
 
     private data class State(
-        val data: LoginMockData? = null
+        val data: LoginScreenData? = null
     )
 
     data class ViewState(
@@ -64,12 +69,3 @@ class UserLoginViewModel : BaseViewModel<UserLoginViewModel.Command, UserLoginVi
     )
 }
 
-private data class LoginMockData(
-    val title: String = "Log in to Music Player!",
-    val description: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    val loginCtaTitle: String = "Log in",
-    val signUpCtaTitle: String = "Create an account",
-    val continueAsGuestCtaTitle: String = "Continue as guest",
-    val separator: String = "or",
-    val forgotPassword: String = "Forgot password?"
-)
