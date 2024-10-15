@@ -14,13 +14,17 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -96,6 +100,9 @@ abstract class BaseViewModel<Command : BaseCommand, Action : Any> : ViewModel() 
         super.onCleared()
         viewModelScope.cancel()
     }
-
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun <T, R> StateFlow<T>.mapState(
+        map: (T) -> R,
+    ) = mapLatest { state-> map(state) }.stateIn(viewModelScope, SharingStarted.Eagerly, map(value))
 }
 
