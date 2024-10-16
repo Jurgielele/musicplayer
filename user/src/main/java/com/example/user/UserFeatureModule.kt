@@ -1,9 +1,0 @@
-package com.example.user
-
-import com.example.user.domain.domainModule
-import com.example.user.presentation.presentationModule
-
-val userFeatureModule = listOf(
-    presentationModule,
-    domainModule
-)
