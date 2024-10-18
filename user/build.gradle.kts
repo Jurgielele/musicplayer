@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.user"
+    namespace = "com.musicplayer.user"
     compileSdk = 34
 
     defaultConfig {

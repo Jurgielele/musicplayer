@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.designsystem"
+    namespace = "com.musicplayer.designsystem"
     compileSdk = 34
 
     defaultConfig {
