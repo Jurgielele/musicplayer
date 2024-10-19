@@ -22,3 +22,6 @@ local.properties
 /.idea/misc.xml
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/runConfigurations.xml
+/.idea/shelf/Add_firebase_to_app.xml
+/.idea/shelf/Add_firebase_to_app/shelved.patch
+/.idea/*

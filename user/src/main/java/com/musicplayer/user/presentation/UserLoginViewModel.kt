@@ -1,16 +1,21 @@
 package com.musicplayer.user.presentation
 
+import android.util.Log
 import com.musicplayer.core.android.viewmodel.BaseCommand
 import com.musicplayer.core.viewmodel.BaseViewModel
 import com.musicplayer.core.android.viewmodel.CommandType
+import com.musicplayer.user.domain.RegisterResult
 import com.musicplayer.user.domain.UserGetLoginDataUseCase
 import com.musicplayer.user.domain.UserGetLoginDataUseCase.LoginScreenData
+import com.musicplayer.user.domain.UserRegisterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class UserLoginViewModel(
-    private val getLoginDataUseCase: UserGetLoginDataUseCase
+    private val getLoginDataUseCase: UserGetLoginDataUseCase,
+    private val userRegisterUseCase: UserRegisterUseCase,
 ) : BaseViewModel<UserLoginViewModel.Command, UserLoginViewModel.Action>() {
 
     private val state = MutableStateFlow(State())
@@ -21,6 +26,7 @@ class UserLoginViewModel(
     init {
         val data = getLoginDataUseCase.execute()
         state.update { state -> state.copy(data = data) }
+        register()
     }
 
     override fun Command.handle() {
@@ -28,6 +34,23 @@ class UserLoginViewModel(
             is Command.OnLoginCtaClicked -> TODO()
             is Command.OnSignUpCtaClicked -> TODO()
             Command.OnContinueAsGuestCtaClicked -> TODO()
+        }
+    }
+
+
+    private fun register() {
+        viewModelScope.launch {
+            userRegisterUseCase.execute("email@email.com", "D1!password").also { result ->
+                when (result) {
+                    is RegisterResult.Success -> {
+                        Log.i("UserLoginViewModel", "User registered successfully")
+                    }
+
+                    is RegisterResult.Error -> {
+                        Log.e("UserLoginViewModel", "qaz ${result.message}")
+                    }
+                }
+            }
         }
     }
 
