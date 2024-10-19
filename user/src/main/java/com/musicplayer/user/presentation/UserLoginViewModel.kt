@@ -1,14 +1,14 @@
 package com.musicplayer.user.presentation
 
-import android.util.Log
 import com.musicplayer.core.android.viewmodel.BaseCommand
-import com.musicplayer.core.viewmodel.BaseViewModel
 import com.musicplayer.core.android.viewmodel.CommandType
-import com.musicplayer.user.domain.RegisterResult
-import com.musicplayer.user.domain.UserGetLoginDataUseCase
-import com.musicplayer.user.domain.UserGetLoginDataUseCase.LoginScreenData
-import com.musicplayer.user.domain.UserLoginUseCase
-import com.musicplayer.user.domain.UserRegisterUseCase
+import com.musicplayer.core.viewmodel.BaseViewModel
+import com.musicplayer.user.domain.entity.LoginResult
+import com.musicplayer.user.domain.entity.RegisterResult
+import com.musicplayer.user.domain.usecase.UserGetLoginDataUseCase
+import com.musicplayer.user.domain.usecase.UserGetLoginDataUseCase.LoginScreenData
+import com.musicplayer.user.domain.usecase.UserLoginUseCase
+import com.musicplayer.user.domain.usecase.UserRegisterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -28,8 +28,6 @@ class UserLoginViewModel(
     init {
         val data = getLoginDataUseCase.execute()
         state.update { state -> state.copy(data = data) }
-//        register()
-        login()
     }
 
     override fun Command.handle() {
@@ -45,44 +43,40 @@ class UserLoginViewModel(
             val result =
                 userLoginUseCase.execute(email = "email@email.com", password = "D1!passwordX")
             when (result) {
-                is UserLoginUseCase.LoginResult.Success -> {
-                    Log.i("UserLoginViewModel", "User logged in successfully")
-                }
-
-                is UserLoginUseCase.LoginResult.Error -> {
-                    Log.e("UserLoginViewModel", "qaz ${result.message}")
-                }
+                is LoginResult.Success -> onLoginSuccess()
+                is LoginResult.Error -> onLoginFailure()
             }
         }
     }
-
 
     private fun register() {
         viewModelScope.launch {
             val result =
                 userRegisterUseCase.execute(email = "email@email.com", password = "D1!password")
             when (result) {
-                is RegisterResult.Success -> {
-                    Log.i("UserLoginViewModel", "User registered successfully")
-                }
+                RegisterResult.Success -> onRegisterSuccess()
 
-                is RegisterResult.Error -> {
-                    Log.e("UserLoginViewModel", "qaz ${result.message}")
-                }
+                is RegisterResult.Error -> result.onRegisterFailure()
             }
         }
     }
 
-    sealed class Action {
-        data object PrintLog : Action()
+
+    private fun onLoginSuccess() {
+        TODO()
     }
 
-    sealed class Command(override val type: CommandType = CommandType.Throttable) : BaseCommand {
-        data object OnLoginCtaClicked : Command()
-        data object OnSignUpCtaClicked : Command()
-        data object OnContinueAsGuestCtaClicked : Command()
+    private fun onLoginFailure() {
+        TODO()
     }
 
+    private fun onRegisterSuccess() {
+        TODO()
+    }
+
+    private fun RegisterResult.Error.onRegisterFailure() {
+        TODO()
+    }
 
     private fun State.toViewState(): ViewState {
         return ViewState(
@@ -95,6 +89,17 @@ class UserLoginViewModel(
             forgotPassword = data?.forgotPassword.orEmpty()
         )
     }
+
+    sealed class Action {
+        data object PrintLog : Action()
+    }
+
+    sealed class Command(override val type: CommandType = CommandType.Throttable) : BaseCommand {
+        data object OnLoginCtaClicked : Command()
+        data object OnSignUpCtaClicked : Command()
+        data object OnContinueAsGuestCtaClicked : Command()
+    }
+
 
     private data class State(
         val data: LoginScreenData? = null

@@ -1,4 +1,4 @@
-package com.musicplayer.user.domain
+package com.musicplayer.user.domain.usecase
 
 class UserGetLoginDataUseCase {
 
