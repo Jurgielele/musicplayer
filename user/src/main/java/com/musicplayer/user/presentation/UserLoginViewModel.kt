@@ -7,6 +7,7 @@ import com.musicplayer.core.android.viewmodel.CommandType
 import com.musicplayer.user.domain.RegisterResult
 import com.musicplayer.user.domain.UserGetLoginDataUseCase
 import com.musicplayer.user.domain.UserGetLoginDataUseCase.LoginScreenData
+import com.musicplayer.user.domain.UserLoginUseCase
 import com.musicplayer.user.domain.UserRegisterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class UserLoginViewModel(
     private val getLoginDataUseCase: UserGetLoginDataUseCase,
     private val userRegisterUseCase: UserRegisterUseCase,
+    private val userLoginUseCase: UserLoginUseCase,
 ) : BaseViewModel<UserLoginViewModel.Command, UserLoginViewModel.Action>() {
 
     private val state = MutableStateFlow(State())
@@ -26,7 +28,8 @@ class UserLoginViewModel(
     init {
         val data = getLoginDataUseCase.execute()
         state.update { state -> state.copy(data = data) }
-        register()
+//        register()
+        login()
     }
 
     override fun Command.handle() {
@@ -37,18 +40,34 @@ class UserLoginViewModel(
         }
     }
 
+    private fun login() {
+        viewModelScope.launch {
+            val result =
+                userLoginUseCase.execute(email = "email@email.com", password = "D1!passwordX")
+            when (result) {
+                is UserLoginUseCase.LoginResult.Success -> {
+                    Log.i("UserLoginViewModel", "User logged in successfully")
+                }
+
+                is UserLoginUseCase.LoginResult.Error -> {
+                    Log.e("UserLoginViewModel", "qaz ${result.message}")
+                }
+            }
+        }
+    }
+
 
     private fun register() {
         viewModelScope.launch {
-            userRegisterUseCase.execute("email@email.com", "D1!password").also { result ->
-                when (result) {
-                    is RegisterResult.Success -> {
-                        Log.i("UserLoginViewModel", "User registered successfully")
-                    }
+            val result =
+                userRegisterUseCase.execute(email = "email@email.com", password = "D1!password")
+            when (result) {
+                is RegisterResult.Success -> {
+                    Log.i("UserLoginViewModel", "User registered successfully")
+                }
 
-                    is RegisterResult.Error -> {
-                        Log.e("UserLoginViewModel", "qaz ${result.message}")
-                    }
+                is RegisterResult.Error -> {
+                    Log.e("UserLoginViewModel", "qaz ${result.message}")
                 }
             }
         }

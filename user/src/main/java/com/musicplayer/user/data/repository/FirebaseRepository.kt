@@ -7,6 +7,18 @@ import kotlinx.coroutines.tasks.await
 class FirebaseRepository(
     private val firebaseAuth: FirebaseAuth
 ) {
+
+    suspend fun login(email: String, password: String): Result {
+        return runCatching {
+            firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            Log.i("FirebaseRepository", "User logged in successfully")
+            Result.Success
+        }.getOrElse { exception ->
+            Log.e("FirebaseRepository", "Error logging in user", exception)
+            Result.Error(exception)
+        }
+    }
+
     suspend fun register(email: String, password: String): Result {
         return runCatching {
             firebaseAuth.createUserWithEmailAndPassword(email, password).await()

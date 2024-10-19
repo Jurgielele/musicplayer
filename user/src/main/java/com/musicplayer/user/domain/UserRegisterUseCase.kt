@@ -17,26 +17,25 @@ class UserRegisterUseCase(
     private fun Throwable.toMessage(): String {
         return when (this) {
             is FirebaseAuthException -> when (this.errorCode) {
-                InvalidEmailCode -> InvalidEmailMessage
-                EmailAlreadyInUseCode -> EmailAlreadyInUseMessage
-                WeakPasswordCode -> WeakPasswordMessage
-                else -> GenericErrorMessage
+                INVALID_EMAIL_CODE -> INVALID_EMAIL_MESSAGE
+                EMAIL_ALREADY_IN_USE_CODE -> EMAIL_ALREADY_IN_USE_MESSAGE
+                WEAK_PASSWORD_CODE -> WEAK_PASSWORD_MESSAGE
+                else -> GENERIC_ERROR_MESSAGE
             }
 
-            else -> GenericErrorMessage
+            else -> GENERIC_ERROR_MESSAGE
         }
     }
-
+    //TODO: Check error codes if all of them are correct - 19.10.2024
     private companion object {
-        const val InvalidEmailCode = "ERROR_INVALID_EMAIL"
-        const val EmailAlreadyInUseCode = "ERROR_EMAIL_ALREADY_IN_USE"
-        const val WeakPasswordCode = "ERROR_WEAK_PASSWORD"
+        const val INVALID_EMAIL_CODE = "ERROR_INVALID_EMAIL"
+        const val EMAIL_ALREADY_IN_USE_CODE = "ERROR_EMAIL_ALREADY_IN_USE"
+        const val WEAK_PASSWORD_CODE = "ERROR_WEAK_PASSWORD"
 
-        const val GenericErrorMessage = "Something went wrong, please try again later."
-        const val InvalidEmailMessage = "The email address is badly formatted."
-        const val EmailAlreadyInUseMessage =
-            "The email address is already in use by another account."
-        const val WeakPasswordMessage = "The password is too weak."
+        const val GENERIC_ERROR_MESSAGE = "Something went wrong, please try again later."
+        const val INVALID_EMAIL_MESSAGE = "The email address is badly formatted."
+        const val EMAIL_ALREADY_IN_USE_MESSAGE = "The email address is already in use by another account."
+        const val WEAK_PASSWORD_MESSAGE = "The password is too weak."
     }
 }
 
