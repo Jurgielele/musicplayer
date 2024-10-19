@@ -1,5 +1,8 @@
 package com.musicplayer.user.presentation
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.musicplayer.core.android.viewmodel.BaseCommand
 import com.musicplayer.core.android.viewmodel.CommandType
 import com.musicplayer.core.viewmodel.BaseViewModel
@@ -25,6 +28,11 @@ class UserLoginViewModel(
         state.toViewState()
     }
 
+    var userEmail by mutableStateOf("")
+        private set
+    var userPassword by mutableStateOf("")
+        private set
+
     init {
         val data = getLoginDataUseCase.execute()
         state.update { state -> state.copy(data = data) }
@@ -32,16 +40,26 @@ class UserLoginViewModel(
 
     override fun Command.handle() {
         when (this) {
-            is Command.OnLoginCtaClicked -> TODO()
-            is Command.OnSignUpCtaClicked -> TODO()
+            is Command.OnLoginCtaClicked -> login()
+            is Command.OnRegisterCtaClicked -> register()
             Command.OnContinueAsGuestCtaClicked -> TODO()
+            is Command.OnEmailChanged -> onEmailChanged(email = email)
+            is Command.OnPasswordChanged -> onPasswordChanged(password = password)
         }
     }
 
+    private fun onEmailChanged(email: String) {
+        userEmail = email
+    }
+
+    private fun onPasswordChanged(password: String) {
+        userPassword = password
+    }
+
+
     private fun login() {
         viewModelScope.launch {
-            val result =
-                userLoginUseCase.execute(email = "email@email.com", password = "D1!passwordX")
+            val result = userLoginUseCase.execute(email = userEmail, password = userPassword)
             when (result) {
                 is LoginResult.Success -> onLoginSuccess()
                 is LoginResult.Error -> onLoginFailure()
@@ -52,10 +70,9 @@ class UserLoginViewModel(
     private fun register() {
         viewModelScope.launch {
             val result =
-                userRegisterUseCase.execute(email = "email@email.com", password = "D1!password")
+                userRegisterUseCase.execute(email = userEmail, password = userPassword)
             when (result) {
                 RegisterResult.Success -> onRegisterSuccess()
-
                 is RegisterResult.Error -> result.onRegisterFailure()
             }
         }
@@ -96,8 +113,10 @@ class UserLoginViewModel(
 
     sealed class Command(override val type: CommandType = CommandType.Throttable) : BaseCommand {
         data object OnLoginCtaClicked : Command()
-        data object OnSignUpCtaClicked : Command()
+        data object OnRegisterCtaClicked : Command()
         data object OnContinueAsGuestCtaClicked : Command()
+        data class OnEmailChanged(val email: String) : Command(type = CommandType.Immediate)
+        data class OnPasswordChanged(val password: String) : Command(type = CommandType.Immediate)
     }
 
 

@@ -33,10 +33,14 @@ fun UserLoginScreen(
 ) {
     val viewModel = koinViewModel<UserLoginViewModel>()
     val viewState = viewModel.viewState.collectAsState().value
+    val userEmail = viewModel.userEmail
+    val userPassword = viewModel.userPassword
     LaunchedEffect(Unit) {
         viewModel.actions.collect { action -> action.handle() }
     }
     UserLoginScreenContent(
+        userEmail = userEmail,
+        userPassword = userPassword,
         viewState = viewState,
         trigger = { command -> viewModel.trigger(command) })
 }
@@ -49,6 +53,8 @@ private fun UserLoginViewModel.Action.handle() = when (this) {
 
 @Composable
 private fun UserLoginScreenContent(
+    userEmail: String,
+    userPassword: String,
     viewState: UserLoginViewModel.ViewState,
     trigger: (UserLoginViewModel.Command) -> Unit
 ) {
@@ -81,15 +87,20 @@ private fun UserLoginScreenContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
-            value = "",
-            onValueChange = {},
+            value = userEmail,
+            onValueChange = { email ->
+                trigger(UserLoginViewModel.Command.OnEmailChanged(email = email))
+            },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
-            value = "",
-            onValueChange = {},
+            value = userPassword,
+            onValueChange = { password ->
+                trigger(UserLoginViewModel.Command.OnPasswordChanged(password = password))
+
+            },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -112,7 +123,7 @@ private fun UserLoginScreenContent(
             separator = viewState.separator,
             primaryCtaTitle = viewState.signUpCtaTitle,
             secondaryCtaTitle = viewState.continueAsGuestCtaTitle,
-            onPrimaryCtaClicked = { trigger(UserLoginViewModel.Command.OnSignUpCtaClicked) },
+            onPrimaryCtaClicked = { trigger(UserLoginViewModel.Command.OnRegisterCtaClicked) },
             onSecondaryCtaClicked = { trigger(UserLoginViewModel.Command.OnContinueAsGuestCtaClicked) }
         )
     }
@@ -156,13 +167,17 @@ private fun OrDivider(text: String) {
 @Preview
 @Composable
 private fun UserLoginScreenContentPreview() {
-    UserLoginScreenContent(viewState = UserLoginViewModel.ViewState(
-        title = "Log in to Music Player!",
-        description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        loginCtaTitle = "Log in",
-        signUpCtaTitle = "Create an account",
-        continueAsGuestCtaTitle = "Continue as guest",
-        separator = "or",
-        forgotPassword = "Forgot password?"
-    ), trigger = {})
+    UserLoginScreenContent(
+        viewState = UserLoginViewModel.ViewState(
+            title = "Log in to Music Player!",
+            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            loginCtaTitle = "Log in",
+            signUpCtaTitle = "Create an account",
+            continueAsGuestCtaTitle = "Continue as guest",
+            separator = "or",
+            forgotPassword = "Forgot password?"
+        ),
+        userEmail = "",
+        userPassword = "",
+        trigger = {})
 }
