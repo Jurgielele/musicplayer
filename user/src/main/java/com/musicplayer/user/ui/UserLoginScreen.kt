@@ -1,6 +1,7 @@
 package com.musicplayer.user.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,23 +9,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.musicplayer.designsystem.DsButton
+import com.musicplayer.designsystem.components.DsButton
+import com.musicplayer.designsystem.components.DsTextField
 import com.musicplayer.user.presentation.UserLoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,109 +50,6 @@ private fun UserLoginViewModel.Action.handle() = when (this) {
     }
 }
 
-@Composable
-private fun UserLoginScreenContent(
-    userEmail: String,
-    userPassword: String,
-    viewState: UserLoginViewModel.ViewState,
-    trigger: (UserLoginViewModel.Command) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
-            .padding(16.dp)
-    ) {
-        Icon(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(96.dp),
-            imageVector = Icons.Default.PlayArrow,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = viewState.title,
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = viewState.description,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        TextField(
-            value = userEmail,
-            onValueChange = { email ->
-                trigger(UserLoginViewModel.Command.OnEmailChanged(email = email))
-            },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        TextField(
-            value = userPassword,
-            onValueChange = { password ->
-                trigger(UserLoginViewModel.Command.OnPasswordChanged(password = password))
-
-            },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = viewState.forgotPassword,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.End
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        DsButton.Primary(
-            text = viewState.loginCtaTitle,
-            modifier = Modifier.fillMaxWidth(),
-            buttonSize = DsButton.ButtonSize.Medium
-        ) { }
-
-        Spacer(modifier = Modifier.weight(1f))
-        Buttons(
-            separator = viewState.separator,
-            primaryCtaTitle = viewState.signUpCtaTitle,
-            secondaryCtaTitle = viewState.continueAsGuestCtaTitle,
-            onPrimaryCtaClicked = { trigger(UserLoginViewModel.Command.OnRegisterCtaClicked) },
-            onSecondaryCtaClicked = { trigger(UserLoginViewModel.Command.OnContinueAsGuestCtaClicked) }
-        )
-    }
-}
-
-@Composable
-private fun Buttons(
-    separator: String,
-    primaryCtaTitle: String,
-    secondaryCtaTitle: String,
-    onPrimaryCtaClicked: () -> Unit,
-    onSecondaryCtaClicked: () -> Unit
-) {
-    DsButton.Primary(
-        text = primaryCtaTitle,
-        modifier = Modifier.fillMaxWidth(),
-        buttonSize = DsButton.ButtonSize.Medium
-    ) {
-        onPrimaryCtaClicked()
-    }
-    OrDivider(separator)
-    DsButton.Secondary(
-        text = secondaryCtaTitle,
-        modifier = Modifier.fillMaxWidth(),
-        buttonSize = DsButton.ButtonSize.Medium
-    ) {
-        onSecondaryCtaClicked()
-    }
-
-}
 
 @Composable
 private fun OrDivider(text: String) {
@@ -164,20 +60,157 @@ private fun OrDivider(text: String) {
     }
 }
 
+@Composable
+private fun UserLoginScreenContent(
+    userEmail: String,
+    userPassword: String,
+    viewState: UserLoginViewModel.ViewState,
+    trigger: (UserLoginViewModel.Command) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+            .padding(all = 24.dp)
+    ) {
+        Spacer(modifier = Modifier.height(100.dp))
+        TitleText(viewState.title)
+        Spacer(modifier = Modifier.height(16.dp))
+        DescriptionText(viewState.description)
+        Spacer(modifier = Modifier.height(32.dp))
+        EmailAndPasswordFields(
+            userEmail = userEmail,
+            userPassword = userPassword,
+            trigger = trigger
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        ForgotPasswordText(viewState.forgotPassword)
+        Spacer(modifier = Modifier.height(16.dp))
+        LoginButton(viewState.loginCtaTitle, trigger)
+        Spacer(modifier = Modifier.weight(1f))
+        OrDivider(text = viewState.separator)
+        SocialButtons()
+        SignUpText(viewState.signUpCtaTitle)
+    }
+}
+
+@Composable
+private fun TitleText(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.displaySmall,
+        color = Color.Black,
+        fontWeight = FontWeight.Black
+    )
+}
+
+@Composable
+private fun DescriptionText(description: String) {
+    Text(
+        text = description,
+        style = MaterialTheme.typography.headlineSmall
+    )
+}
+
+@Composable
+private fun ForgotPasswordText(forgotPassword: String) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = forgotPassword,
+        style = MaterialTheme.typography.bodyMedium,
+        textAlign = TextAlign.End
+    )
+}
+
+@Composable
+private fun LoginButton(loginCtaTitle: String, trigger: (UserLoginViewModel.Command) -> Unit) {
+    DsButton.Primary(
+        modifier = Modifier.fillMaxWidth(),
+        text = loginCtaTitle,
+        buttonSize = DsButton.ButtonSize.Medium
+    ) {
+        trigger(UserLoginViewModel.Command.OnLoginCtaClicked)
+    }
+}
+
+@Composable
+private fun SignUpText(signUpCtaTitle: String) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        textAlign = TextAlign.Center,
+        text = signUpCtaTitle
+    )
+}
+
+@Composable
+private fun EmailAndPasswordFields(
+    userEmail: String,
+    userPassword: String,
+    trigger: (UserLoginViewModel.Command) -> Unit
+) {
+    DsTextField.Email(
+        value = userEmail,
+        label = "Email"
+    ) { email ->
+        trigger(UserLoginViewModel.Command.OnEmailChanged(email = email))
+    }
+    Spacer(modifier = Modifier.height(16.dp))
+    DsTextField.Password(
+        value = userPassword,
+        label = "Password"
+    ) { password ->
+        trigger(UserLoginViewModel.Command.OnPasswordChanged(password = password))
+    }
+}
+
+//TODO add login by social media - 20.10.2024
+@Composable
+private fun SocialButtons() {
+    Column(
+        modifier = Modifier.padding(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        DsButton.Secondary(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Continue with Google",
+            buttonSize = DsButton.ButtonSize.Small
+        ) {
+
+        }
+        DsButton.Secondary(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Continue with Facebook",
+            buttonSize = DsButton.ButtonSize.Small
+        ) {
+
+        }
+        DsButton.Secondary(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Continue with X",
+            buttonSize = DsButton.ButtonSize.Small
+        ) {
+
+        }
+    }
+}
+
+
 @Preview
 @Composable
 private fun UserLoginScreenContentPreview() {
     UserLoginScreenContent(
         viewState = UserLoginViewModel.ViewState(
-            title = "Log in to Music Player!",
-            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            loginCtaTitle = "Log in",
-            signUpCtaTitle = "Create an account",
+            title = "Login",
+            description = "Please sign in to continue",
+            loginCtaTitle = "Login",
+            signUpCtaTitle = "Don't have an account? Sign up here",
             continueAsGuestCtaTitle = "Continue as guest",
             separator = "or",
-            forgotPassword = "Forgot password?"
-        ),
-        userEmail = "",
+            forgotPassword = "Forgot password?",
+
+
+            ),
+        userEmail = "patrykjurgielewicz123@gmail.com",
         userPassword = "",
         trigger = {})
 }

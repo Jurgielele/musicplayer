@@ -69,8 +69,7 @@ class UserLoginViewModel(
 
     private fun register() {
         viewModelScope.launch {
-            val result =
-                userRegisterUseCase.execute(email = userEmail, password = userPassword)
+            val result = userRegisterUseCase.execute(email = userEmail, password = userPassword)
             when (result) {
                 RegisterResult.Success -> onRegisterSuccess()
                 is RegisterResult.Error -> result.onRegisterFailure()
@@ -88,7 +87,7 @@ class UserLoginViewModel(
     }
 
     private fun onRegisterSuccess() {
-        TODO()
+
     }
 
     private fun RegisterResult.Error.onRegisterFailure() {
