@@ -1,4 +1,4 @@
-package com.musicplayer.designsystem
+package com.musicplayer.designsystem.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.musicplayer.designsystem.DsButton.ButtonSize
+import com.musicplayer.designsystem.components.DsButton.ButtonSize
+import com.musicplayer.designsystem.disabled
 
 object DsButton {
 

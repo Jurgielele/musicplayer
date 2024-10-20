@@ -1,4 +1,4 @@
-package com.musicplayer.designsystem
+package com.musicplayer.designsystem.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.musicplayer.designsystem.R
 
 object DsTextField {
 
